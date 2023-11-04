@@ -1,32 +1,32 @@
 .data
-	#Todos os arquivos necessários devem estar na mesma pasta que o arquivo .asm"
-    xTrain:         .asciiz  "C:/Users/Joel/Documents/USP/OAC 2/EP1/xtrain.txt"
+	#Todos os arquivos necessÃ¡rios devem estar na mesma pasta que o arquivo .asm"
+    xTrain:         .asciiz  "xtrain.txt"
     xTrainBuffer:   .space 20480
-    xTest:          .asciiz   "C:/Users/Joel/Documents/USP/OAC 2/EP1/xtest.txt"
+    xTest:          .asciiz   "xtest.txt"
     xTestBuffer:    .space  10240
-    yTrain:         .asciiz  "C:/Users/Joel/Documents/USP/OAC 2/EP1/ytrain.txt"
+    yTrain:         .asciiz  "ytrain.txt"
     yTrainBuffer:   .space 10240
-    yTest:          .asciiz   "C:/Users/Joel/Documents/USP/OAC 2/EP1/ytest.txt"      
+    yTest:          .asciiz   "ytest.txt"      
     yTestBuffer:    .space 10240
-    zero:           .float 0.0	              #os co registradores não possuem um $zero, então reservo aqui
-    dez:            .float 10.0	              #para os cálculos de multiplicação e divisão por 10
+    zero:           .float 0.0	              #os co registradores nÃ£o possuem um $zero, entÃ£o reservo aqui
+    dez:            .float 10.0	              #para os cÃ¡lculos de multiplicaÃ§Ã£o e divisÃ£o por 10
     byteBuffer:     .space 1                  #buffer para fazer a leitura byte a byte
-    maxFloat:       .float 3.40e+38f          #valor máximo para um float, que será usado inicialmente no registrador que vai salvar a menor distância, garantindo que a primeira comparação sempre seja verdadeira.
+    maxFloat:       .float 3.40e+38f          #valor mÃ¡ximo para um float, que serÃ¡ usado inicialmente no registrador que vai salvar a menor distÃ¢ncia, garantindo que a primeira comparaÃ§Ã£o sempre seja verdadeira.
 .text
 
 main:
 
-    # Inicialização
-    li $t0, 0           # $t0 é usado para manter o índice na sequência de caracteres
-    li $t3, 0           # $t3 é usado para manter a posição do dígito decimal
-    li $t7, 0           # $t7 será usado para registrar a quantidade de números que estão sendo lidos
-    lwc1 $f4, dez       # $f4 será usado para multiplicar e dividir os valores por 10
-    lwc1 $f31, zero     # os corregistradores 1 não possuem um registrador reservado para atuar como zero, então estou definindo aqui
-    lwc1 $f30, maxFloat #valor máximo que pode haver em um float, para garantir a primeira comparação sendo True 
+    # InicializaÃ§Ã£o
+    li $t0, 0           # $t0 Ã© usado para manter o Ã­ndice na sequÃªncia de caracteres
+    li $t3, 0           # $t3 Ã© usado para manter a posiÃ§Ã£o do dÃ­gito decimal
+    li $t7, 0           # $t7 serÃ¡ usado para registrar a quantidade de nÃºmeros que estÃ£o sendo lidos
+    lwc1 $f4, dez       # $f4 serÃ¡ usado para multiplicar e dividir os valores por 10
+    lwc1 $f31, zero     # os corregistradores 1 nÃ£o possuem um registrador reservado para atuar como zero, entÃ£o estou definindo aqui
+    lwc1 $f30, maxFloat #valor mÃ¡ximo que pode haver em um float, para garantir a primeira comparaÃ§Ã£o sendo True 
     la $s1, byteBuffer
-    li $s3, 0           #o registrador $s6 vai salvar o valor da linha com a menor distância para que possa atualizar no final.
+    li $s3, 0           #o registrador $s6 vai salvar o valor da linha com a menor distÃ¢ncia para que possa atualizar no final.
     li $s4, 0           #o registrador $s4 vai registrar o valor da linha atual de xTrain, para saber qual linha salvar em $s6
-    li $s2, 0           #o registrador $s2 será usado para guardar o tamanho do arquivo de saída ytrain
+    li $s2, 0           #o registrador $s2 serÃ¡ usado para guardar o tamanho do arquivo de saÃ­da ytrain
     la $s7, yTrainBuffer
       
     jal abrirArquivos
@@ -38,49 +38,49 @@ main:
 abrirArquivos:
     
     li $v0, 13                  # syscall de abertura de arquivo
-    la $a0, xTest               # carrega endereço com nome do arquivo para abertura
+    la $a0, xTest               # carrega endereÃ§o com nome do arquivo para abertura
     li $a1, 0                   # indicador de abertura em modo leitura
-    li $a2, 0     		# ignorar permissões
+    li $a2, 0     		# ignorar permissÃµes
     syscall       		# chamada de sistema que realiza a abertura
     move $s0, $v0   		# Salvando o descritor de abertura do arquivo em um registrador para uso ao longo do programa.
     
     
     li $v0, 13                  # syscall de abertura de arquivo
-    la $a0, xTrain              # carrega endereço com nome do arquivo para abertura
+    la $a0, xTrain              # carrega endereÃ§o com nome do arquivo para abertura
     li $a1, 0                   # indicador de abertura em modo leitura
-    li $a2, 0     		# ignorar permissões
+    li $a2, 0     		# ignorar permissÃµes
     syscall       		# chamada de sistema que realiza a abertura
-    move $s5, $v0               # o descritor do arquivo Xtrain ficará em s5
+    move $s5, $v0               # o descritor do arquivo Xtrain ficarÃ¡ em s5
     
     
     li $v0, 13                  # syscall de abertura de arquivo
-    la $a0, yTest               # carrega endereço com nome do arquivo para abertura
+    la $a0, yTest               # carrega endereÃ§o com nome do arquivo para abertura
     li $a1, 0                   # indicador de abertura em modo leitura
-    li $a2, 0     		# ignorar permissões
+    li $a2, 0     		# ignorar permissÃµes
     syscall       		# chamada de sistema que realiza a abertura
-    move $s6, $v0               # o descritor do arquivo yTeste ficará em s6
+    move $s6, $v0               # o descritor do arquivo yTeste ficarÃ¡ em s6
     
     jr $ra                      #volta para o main e continua o programa
 
 loopInteiro:
     # ler um byte
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s0  # descritor do arquivo está em $s0
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s0  # descritor do arquivo estÃ¡ em $s0
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall       # lê o próximo byte do arquivo
+    syscall       # lÃª o prÃ³ximo byte do arquivo
     
     lb $t1, 0($a1)
-    # Verificar se chegou ao final da sequência
+    # Verificar se chegou ao final da sequÃªncia
     li $t2, 13              #ascii char (ch)
     beq $t1, $t2, oitavoNumero
     beqz $v0, encerrarPrograma
     
-    # Verificar se o caractere é um ponto decimal
+    # Verificar se o caractere Ã© um ponto decimal
     li $t2, 46          # ASCII '.'
-    beq $t1, $t2, continueDecimal # Se for um ponto decimal, vá para pular ponto e começa a leitura da parte decimal a partir do próximo byte
+    beq $t1, $t2, continueDecimal # Se for um ponto decimal, vÃ¡ para pular ponto e comeÃ§a a leitura da parte decimal a partir do prÃ³ximo byte
     
-    #verificar se é virgula 
+    #verificar se Ã© virgula 
     li $t2, 44
     beq $t1, $t2, proximoNumero
     
@@ -89,63 +89,63 @@ loopInteiro:
     sub $t1, $t1, $t2   # Subtrai '0' do caractere para obter o valor inteiro
     mul.s $f12, $f12, $f4 # Multiplica o valor atual por 10
     mtc1 $t1, $f0       # Carrega o valor inteiro na parte inteira de $f0
-    cvt.s.w $f0, $f0  #remove o resto que surge por causa da transformação
-    add.s $f12, $f12, $f0 # Adiciona o dígito ao valor
+    cvt.s.w $f0, $f0  #remove o resto que surge por causa da transformaÃ§Ã£o
+    add.s $f12, $f12, $f0 # Adiciona o dÃ­gito ao valor
     j continue
     
  loopDecimal:
  
      # ler um byte
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s0  # descritor do arquivo está em $s0
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s0  # descritor do arquivo estÃ¡ em $s0
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall       # lê o próximo byte do arquivo
+    syscall       # lÃª o prÃ³ximo byte do arquivo
     
-    #o número de casas decimais fica salvo em $t3
-    # Ler um caractere da sequência de caracteres
+    #o nÃºmero de casas decimais fica salvo em $t3
+    # Ler um caractere da sequÃªncia de caracteres
     lb $t1, 0($a1)
     
-    # Verificar se chegou ao final da sequência
+    # Verificar se chegou ao final da sequÃªncia
     beqz $v0, finalLinha
     
-    #verificar se é virgula 
+    #verificar se Ã© virgula 
     li $t2, 44
-    beq $t1, $t2, proximoNumero #aqui preciso alterar para salvar o número atual em um registrador e começar a leitura do próximo
+    beq $t1, $t2, proximoNumero #aqui preciso alterar para salvar o nÃºmero atual em um registrador e comeÃ§ar a leitura do prÃ³ximo
     
     #atualizar a parte decimal
-    addi $t3, $t3, 1    #atualiza o núemro de casas decimais
+    addi $t3, $t3, 1    #atualiza o nÃºemro de casas decimais
     li $t2, 48          # ASCII '0'
     sub $t1, $t1, $t2   # Subtrai '0' do caractere para obter o valor inteiro
-    li $t2, 0           #coloco 0 em t2 para controlar quantas vezes devo dividr o número decimal por 10
+    li $t2, 0           #coloco 0 em t2 para controlar quantas vezes devo dividr o nÃºmero decimal por 10
     mtc1 $t1, $f0       # Carrega o valor inteiro na parte inteira de $f0 para ser dividido
-    cvt.s.w $f0, $f0    #remove o resto que surge por causa da transformação
+    cvt.s.w $f0, $f0    #remove o resto que surge por causa da transformaÃ§Ã£o
     jal divideDecimal 
-    add.s $f12, $f12, $f0 # Adiciona o dígito ao valor
+    add.s $f12, $f12, $f0 # Adiciona o dÃ­gito ao valor
     j continueDecimal
     
     
 loopInteiroXtest:
     # ler um byte
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s5  # descritor do arquivo está em $s5
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s5  # descritor do arquivo estÃ¡ em $s5
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall       # lê o próximo byte do arquivo
+    syscall       # lÃª o prÃ³ximo byte do arquivo
     beqz $v0, finalizarArquivoTrain
     lb $t1, 0($a1)
-    # Verificar se chegou ao final da sequência
+    # Verificar se chegou ao final da sequÃªncia
     li $t2, 13              #ascii char (ch)
     beq $t1, $t2, oitavoNumeroTrain
-    # Se o próximo caractere for 10 ascii (nl) vai para a próxima linha, então vou  retornar para essa mesma função
+    # Se o prÃ³ximo caractere for 10 ascii (nl) vai para a prÃ³xima linha, entÃ£o vou  retornar para essa mesma funÃ§Ã£o
     li $t2, 10
     beq $t1, $t2, loopInteiroXtest
     
-    # Verificar se o caractere é um ponto decimal
+    # Verificar se o caractere Ã© um ponto decimal
     li $t2, 46          # ASCII '.'
-    beq $t1, $t2, continueDecimalXtest # Se for um ponto decimal, vá para pular ponto e começa a leitura da parte decimal a partir do próximo byte
+    beq $t1, $t2, continueDecimalXtest # Se for um ponto decimal, vÃ¡ para pular ponto e comeÃ§a a leitura da parte decimal a partir do prÃ³ximo byte
     
-    #verificar se é virgula 
+    #verificar se Ã© virgula 
     li $t2, 44
     beq $t1, $t2, proximoNumeroTrain
     
@@ -154,8 +154,8 @@ loopInteiroXtest:
     sub $t1, $t1, $t2   # Subtrai '0' do caractere para obter o valor inteiro
     mul.s $f12, $f12, $f4 # Multiplica o valor atual por 10
     mtc1 $t1, $f0       # Carrega o valor inteiro na parte inteira de $f0
-    cvt.s.w $f0, $f0  #remove o resto que surge por causa da transformação
-    add.s $f12, $f12, $f0 # Adiciona o dígito ao valor
+    cvt.s.w $f0, $f0  #remove o resto que surge por causa da transformaÃ§Ã£o
+    add.s $f12, $f12, $f0 # Adiciona o dÃ­gito ao valor
     j continueXtest
     
     
@@ -163,61 +163,61 @@ loopDecimalXtest:
  
     # ler um byte
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s5  # descritor do arquivo está em $s0
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s5  # descritor do arquivo estÃ¡ em $s0
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall       # lê o próximo byte do arquivo
+    syscall       # lÃª o prÃ³ximo byte do arquivo
     
-    #o número de casas decimais fica salvo em $t3
-    # Ler um caractere da sequência de caracteres
+    #o nÃºmero de casas decimais fica salvo em $t3
+    # Ler um caractere da sequÃªncia de caracteres
     lb $t1, 0($a1)
     
-    # Verificar se chegou ao final da sequência
+    # Verificar se chegou ao final da sequÃªncia
     li $t2, 13              #ascii char (ch)
     beq $t1, $t2, oitavoNumeroTrain
     beqz $v0, finalizarArquivoTrain
     
-    #verificar se é virgula 
+    #verificar se Ã© virgula 
     li $t2, 44
-    beq $t1, $t2, proximoNumeroTrain #aqui preciso alterar para salvar o número atual em um registrador e começar a leitura do próximo
+    beq $t1, $t2, proximoNumeroTrain #aqui preciso alterar para salvar o nÃºmero atual em um registrador e comeÃ§ar a leitura do prÃ³ximo
     
     #atualizar a parte decimal
-    addi $t3, $t3, 1    #atualiza o núemro de casas decimais
+    addi $t3, $t3, 1    #atualiza o nÃºemro de casas decimais
     li $t2, 48          # ASCII '0'
     sub $t1, $t1, $t2   # Subtrai '0' do caractere para obter o valor inteiro
-    li $t2, 0           #coloco 0 em t2 para controlar quantas vezes devo dividr o número decimal por 10
+    li $t2, 0           #coloco 0 em t2 para controlar quantas vezes devo dividr o nÃºmero decimal por 10
     mtc1 $t1, $f0       # Carrega o valor inteiro na parte inteira de $f0 para ser dividido
-    cvt.s.w $f0, $f0    #remove o resto que surge por causa da transformação
+    cvt.s.w $f0, $f0    #remove o resto que surge por causa da transformaÃ§Ã£o
     jal divideDecimal 
-    add.s $f12, $f12, $f0 # Adiciona o dígito ao valor
+    add.s $f12, $f12, $f0 # Adiciona o dÃ­gito ao valor
     j continueDecimalXtest
     
 continue:
-    # Avança para o próximo caractere e itera
+    # AvanÃ§a para o prÃ³ximo caractere e itera
     j loopInteiro
     
 continueDecimal:
-    j loopDecimal      #após pular o ponto vamos para a parte que trata os decimais
+    j loopDecimal      #apÃ³s pular o ponto vamos para a parte que trata os decimais
     
 continueXtest:
-    # Avança para o próximo caractere e itera
+    # AvanÃ§a para o prÃ³ximo caractere e itera
     j loopInteiroXtest
     
 continueDecimalXtest:
-    j loopDecimalXtest      #após pular o ponto vamos para a parte que trata os decimais
+    j loopDecimalXtest      #apÃ³s pular o ponto vamos para a parte que trata os decimais
     
     
 divideDecimal:
-    beq $t2, $t3, retornar #se o número de vezes que devo dividir por 10 for já igual ao número de casas decimais, volto para o loop anterior
-    addi $t2, $t2, 1   #somo 1 para já preparar para a próxima verificação
+    beq $t2, $t3, retornar #se o nÃºmero de vezes que devo dividir por 10 for jÃ¡ igual ao nÃºmero de casas decimais, volto para o loop anterior
+    addi $t2, $t2, 1   #somo 1 para jÃ¡ preparar para a prÃ³xima verificaÃ§Ã£o
     div.s $f0, $f0, $f4
     j divideDecimal
    
 proximoNumero:
     li $t3, 0
-    addi $t7, $t7, 1 #aumenta o número de $t7 que salva quantos números estão sendo lidos
+    addi $t7, $t7, 1 #aumenta o nÃºmero de $t7 que salva quantos nÃºmeros estÃ£o sendo lidos
     #ainda preciso pensar como decidir em qual registrador salvar
-    #mas nesse caso específico sei o núemro de elementos que tô lendo, então vou improvisar
+    #mas nesse caso especÃ­fico sei o nÃºemro de elementos que tÃ´ lendo, entÃ£o vou improvisar
     beq $t7, 1, primeiroNumero
     beq $t7, 2, segundoNumero
     beq $t7, 3, terceiroNumero
@@ -229,9 +229,9 @@ proximoNumero:
     
 proximoNumeroTrain:
     li $t3, 0
-    addi $t7, $t7, 1 #aumenta o número de $t7 que salva quantos números estão sendo lidos
+    addi $t7, $t7, 1 #aumenta o nÃºmero de $t7 que salva quantos nÃºmeros estÃ£o sendo lidos
     #ainda preciso pensar como decidir em qual registrador salvar
-    #mas nesse caso específico sei o núemro de elementos que tô lendo, então vou improvisar
+    #mas nesse caso especÃ­fico sei o nÃºemro de elementos que tÃ´ lendo, entÃ£o vou improvisar
     beq $t7, 1, primeiroNumeroTrain
     beq $t7, 2, segundoNumeroTrain
     beq $t7, 3, terceiroNumeroTrain
@@ -243,42 +243,42 @@ proximoNumeroTrain:
     
 primeiroNumero:
     add.s $f20, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
 
 segundoNumero:
     add.s $f21, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
 
 terceiroNumero:
     add.s $f22, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue 
     
 quartoNumero:
     add.s $f23, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
 
 quintoNumero:
     add.s $f24, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
 
 sextoNumero:
     add.s $f25, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
     
 setimoNumero:
     add.s $f26, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j continue
     
 oitavoNumero:
     add.s $f27, $f12, $f31
-    lwc1 $f12, zero        #após salvar o número, reseto o $f12
+    lwc1 $f12, zero        #apÃ³s salvar o nÃºmero, reseto o $f12
     j finalLinha
     
 primeiroNumeroTrain:
@@ -332,15 +332,15 @@ oitavoNumeroTrain:
     
 finalLinhaTrain:
     addi $s4, $s4, 1       #$s5 vai guardar o valor da linha atual para atualizarmos depois
-    add $t7, $zero, $zero #zerar o $t7 para podermos voltar a atualizar os números
+    add $t7, $zero, $zero #zerar o $t7 para podermos voltar a atualizar os nÃºmeros
     jal somaDistancias
     jal salvaMenorDistancia
     j continueXtest
     
     
 somaDistancias: 
-    #nessa função iremos salvar os valores das distâncias que foram calculados para a linha atual para comparar com a menor distância até o momento.
-    #antes de fazer as somas é de bom tom zerar os registradores
+    #nessa funÃ§Ã£o iremos salvar os valores das distÃ¢ncias que foram calculados para a linha atual para comparar com a menor distÃ¢ncia atÃ© o momento.
+    #antes de fazer as somas Ã© de bom tom zerar os registradores
     add.s $f0, $f31, $f31
     add.s $f1, $f31, $f31
     add.s $f2, $f31, $f31
@@ -358,7 +358,7 @@ somaDistancias:
     add.s $f0, $f6, $f5
     
     
-    #em seguida vou zerar os regsitradores que estão guardando os valores porque parece estar com alguma sujeira na hora das subtraçoes
+    #em seguida vou zerar os regsitradores que estÃ£o guardando os valores porque parece estar com alguma sujeira na hora das subtraÃ§oes
     add.s $f10, $f31, $f31
     add.s $f11, $f31, $f31
     add.s $f13, $f31, $f31
@@ -371,43 +371,43 @@ somaDistancias:
 
    
 salvaMenorDistancia:
-    c.lt.s $f0, $f30                     #verifica o número que já está salvo com a menor distância e compara com o resultado da soma anterior, se a soma for menor, atualiza, se não avalia o próximo número
+    c.lt.s $f0, $f30                     #verifica o nÃºmero que jÃ¡ estÃ¡ salvo com a menor distÃ¢ncia e compara com o resultado da soma anterior, se a soma for menor, atualiza, se nÃ£o avalia o prÃ³ximo nÃºmero
     bc1t atualizarMenorDistancia
     jr $ra
    
          
 finalLinha:
     li $t7, 0
-    # ler o próximo byte aqui    
-    # Avança para o próximo caractere e itera
+    # ler o prÃ³ximo byte aqui    
+    # AvanÃ§a para o prÃ³ximo caractere e itera
     addi $t0, $t0, 1
     add $a0, $a0, 1
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s0  # descritor do arquivo está em $s0
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s0  # descritor do arquivo estÃ¡ em $s0
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall       # lê o próximo byte do arquivo
+    syscall       # lÃª o prÃ³ximo byte do arquivo
     lb $t1, 0($a1)
     li $t2, 10                   #ascii char (nl) serve para pular linha
-    beq $t1, $t2, loopInteiroXtest     #aqui devo começar a leitura do outro arquivo para fazer a comparação
+    beq $t1, $t2, loopInteiroXtest     #aqui devo comeÃ§ar a leitura do outro arquivo para fazer a comparaÃ§Ã£o
     j encerrarPrograma
    
 retornar:
    jr $ra    #retorna para o $ra, que foi salvo durante o loop de leitura de decimais
    
 verificaProximaLinha:
-   #aqui devemos atualizar o número da linha sendo lida do xTrain para podermos salvar qual é a linha que possui a menor distância
+   #aqui devemos atualizar o nÃºmero da linha sendo lida do xTrain para podermos salvar qual Ã© a linha que possui a menor distÃ¢ncia
    j encerrarPrograma
    
 atualizarMenorDistancia:
-    #caso a distância da linha atual for menor que a menor distância atual, aqui devemos atualizar o número da linha e o valor da menor distância.
-    add.s $f30, $f0, $f31   # $f30 possui o resultado que é a menor distância, $f0 possui o resultado da soma da distância atual, $f31 possui o valor 0
+    #caso a distÃ¢ncia da linha atual for menor que a menor distÃ¢ncia atual, aqui devemos atualizar o nÃºmero da linha e o valor da menor distÃ¢ncia.
+    add.s $f30, $f0, $f31   # $f30 possui o resultado que Ã© a menor distÃ¢ncia, $f0 possui o resultado da soma da distÃ¢ncia atual, $f31 possui o valor 0
     add $s3, $s4, $zero
     jr $ra
     
 finalizarArquivoTrain:
-    #aqui devo atualizar o valor de ytrain com o valor correspondente à linha da menor distância em yTest
-    addi $t3, $zero, 1   #aqui usarei t3 para contar quantas linhas foram lidas até chegar na linha que deve ser salva
+    #aqui devo atualizar o valor de ytrain com o valor correspondente Ã  linha da menor distÃ¢ncia em yTest
+    addi $t3, $zero, 1   #aqui usarei t3 para contar quantas linhas foram lidas atÃ© chegar na linha que deve ser salva
     jal lerYtest
     j encerrarPrograma
     
@@ -415,10 +415,10 @@ finalizarArquivoTrain:
 lerYtest:
     beq $t3, $s3, atualizarYtrain
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s6  # descritor do arquivo está em $s6
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s6  # descritor do arquivo estÃ¡ em $s6
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall        # lê o próximo byte do arquivo
+    syscall        # lÃª o prÃ³ximo byte do arquivo
     lb $t1, 0($a1)
     li $t2, 10
     bne $t1, $t2, lerYtest
@@ -427,10 +427,10 @@ lerYtest:
 atualizarYtrain:
 
     li $v0, 14     # syscall para ler do arquivo
-    move $a0, $s6  # descritor do arquivo está em $s6
-    move $a1, $s1  # endereço do buffer de destino
+    move $a0, $s6  # descritor do arquivo estÃ¡ em $s6
+    move $a1, $s1  # endereÃ§o do buffer de destino
     li $a2, 1      # tamanho do buffer (1 pois estamos fazendo leitura byte a byte)
-    syscall        # lê o próximo byte do arquivo
+    syscall        # lÃª o prÃ³ximo byte do arquivo
     lb $t1, 0($a1)
     sb $t1, 0($s7)
     addi $s2, $s2, 1
@@ -441,26 +441,26 @@ atualizarYtrain:
     
    
 encerrarPrograma:
-    #aqui posso fechar os outros arquivos, assim abrindo espaço nos registradores tipo s
+    #aqui posso fechar os outros arquivos, assim abrindo espaÃ§o nos registradores tipo s
     
-    li $v0, 16 #função para fechar o arquivo, que deve ter o descritor em $a0
+    li $v0, 16 #funÃ§Ã£o para fechar o arquivo, que deve ter o descritor em $a0
     move $a0, $s0
     syscall
     
-    li $v0, 16 #função para fechar o arquivo, que deve ter o descritor em $a0
+    li $v0, 16 #funÃ§Ã£o para fechar o arquivo, que deve ter o descritor em $a0
     move $a0, $s5
     syscall
     
-    li $v0, 16 #função para fechar o arquivo, que deve ter o descritor em $a0
+    li $v0, 16 #funÃ§Ã£o para fechar o arquivo, que deve ter o descritor em $a0
     move $a0, $s6
     syscall
     
     li $v0, 13                   # syscall de abertura de arquivo
-    la $a0, yTrain               # carrega endereço com nome do arquivo para abertura
+    la $a0, yTrain               # carrega endereÃ§o com nome do arquivo para abertura
     li $a1, 1                    # indicador de abertura em modo escrita
-    li $a2, 0     		 # ignorar permissões
+    li $a2, 0     		 # ignorar permissÃµes
     syscall       		 # chamada de sistema que realiza a abertura
-    move $s0, $v0                # o descritor do arquivo yTrain ficará em s0, quer não está mais sendo utilizado para guardar o descritor de outro arquivo.
+    move $s0, $v0                # o descritor do arquivo yTrain ficarÃ¡ em s0, quer nÃ£o estÃ¡ mais sendo utilizado para guardar o descritor de outro arquivo.
     
     li $v0, 15 
     move $a0, $s0
